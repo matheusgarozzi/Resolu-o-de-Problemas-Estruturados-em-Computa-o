@@ -1,0 +1,111 @@
+
+public class MyArrayList <E> {
+
+    private Object[] itens;
+    private int tamanho;
+    private static final int CAPACIDADE_INICIAL = 10;
+
+    public MyArrayList() {
+        this.itens = new Object[CAPACIDADE_INICIAL];
+        this.tamanho = 0;
+    }
+
+    public void adicionar(E item) {
+        if (tamanho == itens.length) {
+            redimensionar();
+        }
+        itens[tamanho] = item;
+        tamanho++;
+    }
+
+    private void redimensionar() {
+        Object[] novoArray = new Object[itens.length * 2];
+
+        for (int i = 0; i < tamanho; i++) {
+            novoArray[i] = itens[i];
+        }
+
+        this.itens = novoArray;
+    }
+
+    public E pegar(int indice) {
+        if (indice < 0 || indice >= tamanho) {
+            throw new IndexOutOfBoundsException("Índice inválido: " + indice);
+        }
+        return (E) itens[indice];
+    }
+
+    public boolean remover(E item) {
+        int indiceParaRemover = -1;
+        for (int i = 0; i < tamanho; i++) {
+            if (itens[i] != null && itens[i].equals(item)) {
+                indiceParaRemover = i;
+                break;
+            }
+        }
+
+        if (indiceParaRemover == -1) {
+            return false;
+        }
+
+        for (int i = indiceParaRemover; i < tamanho - 1; i++) {
+            itens[i] = itens[i+1];
+        }
+
+        itens[tamanho - 1] = null;
+        tamanho--;
+        return true;
+    }
+
+    public int tamanho() {
+        return tamanho;
+    }
+
+    @Override
+    public String toString() {
+        if (tamanho == 0) {
+            return "[]";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        for (int i = 0; i < tamanho; i++) {
+            sb.append(itens[i]);
+            if (i < tamanho - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append(']');
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        MyArrayList<String> listaDeNomes = new MyArrayList<>();
+
+        System.out.println("Tamanho inicial da lista: " + listaDeNomes.tamanho());
+
+        listaDeNomes.adicionar("Alice");
+        listaDeNomes.adicionar("Bob");
+        listaDeNomes.adicionar("Charlie");
+
+        System.out.println("Lista após adicionar 3 nomes: " + listaDeNomes);
+        System.out.println("Tamanho atual: " + listaDeNomes.tamanho());
+
+        System.out.println("Pegando o nome do índice 1: " + listaDeNomes.pegar(1));
+
+        listaDeNomes.remover("Bob");
+        System.out.println("Lista após remover 'Bob': " + listaDeNomes);
+
+        listaDeNomes.adicionar("David");
+        listaDeNomes.adicionar("Eva");
+        listaDeNomes.adicionar("Frank");
+        listaDeNomes.adicionar("Grace");
+        listaDeNomes.adicionar("Heidi");
+        listaDeNomes.adicionar("Ivan");
+        listaDeNomes.adicionar("Judy");
+        listaDeNomes.adicionar("Kevin"); // Isso irá disparar o redimensionamento
+
+        System.out.println("Lista após adicionar muitos nomes: " + listaDeNomes);
+        System.out.println("Tamanho atual: " + listaDeNomes.tamanho());
+    }
+}
